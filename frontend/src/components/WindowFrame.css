@@ -1,0 +1,114 @@
+.window-frame {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+}
+
+.window-frame.maximized {
+    border-radius: 0;
+}
+
+.window-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: move;
+    user-select: none;
+}
+
+.window-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.window-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.window-control {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.window-control:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.window-control.close {
+    background-color: #e81123;
+    color: white;
+}
+
+.window-content {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+}
+
+.window-resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    height: 20px;
+    cursor: nwse-resize;
+    z-index: 1000;
+}
+
+.window-resize-handle::after {
+    content: '';
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #ccc;
+    border-bottom: 2px solid #ccc;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .window-frame {
+        background-color: #1e1e1e;
+    }
+
+    .window-title-bar {
+        background-color: #2d2d2d;
+        border-bottom-color: #3d3d3d;
+    }
+
+    .window-title {
+        color: #fff;
+    }
+
+    .window-control {
+        color: #ccc;
+    }
+
+    .window-control:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .window-resize-handle::after {
+        border-color: #666;
+    }
+} 
