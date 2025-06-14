@@ -4,7 +4,7 @@ import Terminal from './Terminal';
 import FileManager from './FileManager';
 import Notepad from '../apps/Notepad/Notepad';
 import Calculator from '../apps/Calculator/Calculator';
-import TaskManager from '../apps/TaskManager/TaskManager';
+import TaskManager from '../apps/TaskManager/Taskmanager';
 import MusicPlayer from '../apps/MusicPlayer/MusicPlayer';
 import Game from '../apps/Games/Game';
 import Talk from '../apps/Talk/Talk';
