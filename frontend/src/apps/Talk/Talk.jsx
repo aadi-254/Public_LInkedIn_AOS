@@ -34,7 +34,7 @@ const Talk = () => {
     // Get current user info and initialize socket
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/me', {
+        const response = await fetch('https://browseros-aos.onrender.com/api/auth/me', {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -105,7 +105,7 @@ const Talk = () => {
     }
 
     // Create new socket connection
-    const socket = io('http://localhost:5000', {
+    const socket = io('https://browseros-aos.onrender.com', {
       withCredentials: true
     });
     socketRef.current = socket;

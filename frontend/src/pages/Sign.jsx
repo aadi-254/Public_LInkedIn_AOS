@@ -9,13 +9,15 @@ const Sign = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const url = 'https://browseros-aos.onrender.com';
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear previous errors
 
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/${isLogin ? 'login' : 'register'}`, {
+      const response = await fetch(`${url}/api/auth/${isLogin ? 'login' : 'register'}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

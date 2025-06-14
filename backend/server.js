@@ -104,7 +104,7 @@ const upload = multer({
 // Configure Socket.IO with CORS
 const io = socketIo(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: 'https://browser-os-aos-bsis.vercel.app', //---------------------------------------
     methods: ['GET', 'POST'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -122,7 +122,7 @@ const io = socketIo(server, {
 
 // Configure CORS for Express
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://browser-os-aos-bsis.vercel.app', //---------------------------------------
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
