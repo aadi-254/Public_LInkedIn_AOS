@@ -35,6 +35,8 @@ const FileManager = ({ onMinimize, onMaximize, onClose, onDrag, onResize, isMini
   const prevPos = useRef(null);
   const headerRef = useRef(null);
   const windowRef = useRef(null);
+  const url = 'https://browseros-aos.onrender.com';
+
 
   // Add new states for drag and drop
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -172,7 +174,7 @@ const FileManager = ({ onMinimize, onMaximize, onClose, onDrag, onResize, isMini
     if (window.confirm(confirmMessage)) {
       for (const item of selectedItems) {
         try {
-          const response = await fetch(`http://localhost:5000/api/fs/remove`, {
+          const response = await fetch(`${url}/api/fs/remove`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
@@ -223,8 +225,8 @@ const FileManager = ({ onMinimize, onMaximize, onClose, onDrag, onResize, isMini
       // Debug logging
       // If we're in the root (desktop), don't include path parameter
       const downloadUrl = currentPath 
-        ? `http://localhost:5000/api/fs/download?path=${encodeURIComponent(currentPath)}&filename=${encodeURIComponent(item.name)}`
-        : `http://localhost:5000/api/fs/download?filename=${encodeURIComponent(item.name)}`;
+        ? `${url}/api/fs/download?path=${encodeURIComponent(currentPath)}&filename=${encodeURIComponent(item.name)}`
+        : `${url}/api/fs/download?filename=${encodeURIComponent(item.name)}`;
       
       console.log('Download request:', {
         url: downloadUrl,
@@ -298,7 +300,7 @@ const FileManager = ({ onMinimize, onMaximize, onClose, onDrag, onResize, isMini
     try {
       // For files, we need to read the content
       if (item.type === 'file') {
-        const response = await fetch(`http://localhost:5000/api/fs/read/${encodeURIComponent(item.name)}?path=${encodeURIComponent(currentPath)}`, {
+        const response = await fetch(`${url}/api/fs/read/${encodeURIComponent(item.name)}?path=${encodeURIComponent(currentPath)}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json'
@@ -340,7 +342,7 @@ const FileManager = ({ onMinimize, onMaximize, onClose, onDrag, onResize, isMini
     try {
       if (clipboard.type === 'file') {
         // For files, create a new file with the content
-        const response = await fetch(`http://localhost:5000/api/fs/write/${encodeURIComponent(clipboard.name)}`, {
+        const response = await fetch(`${url}/api/fs/write/${encodeURIComponent(clipboard.name)}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -359,7 +361,7 @@ const FileManager = ({ onMinimize, onMaximize, onClose, onDrag, onResize, isMini
         }
       } else {
         // For folders, create a new directory
-        const response = await fetch(`http://localhost:5000/api/fs/mkdir`, {
+        const response = await fetch(`${url}/api/fs/mkdir`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -506,7 +508,7 @@ const FileManager = ({ onMinimize, onMaximize, onClose, onDrag, onResize, isMini
         });
 
         // Add currentPath as a query parameter to the URL
-        const uploadUrl = `http://localhost:5000/api/fs/upload${currentPath ? `?path=${encodeURIComponent(currentPath)}` : ''}`;
+        const uploadUrl = `${url}/api/fs/upload${currentPath ? `?path=${encodeURIComponent(currentPath)}` : ''}`;
         
         const response = await fetch(uploadUrl, {
           method: 'POST',

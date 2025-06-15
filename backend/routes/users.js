@@ -48,15 +48,15 @@ router.post('/register', validateInput, async (req, res) => {
     res.cookie('userId', db.CONSTANT_USER_ID, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000 ,
-      sameSite: 'None'// 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'None'
     });
 
     res.cookie('username', username, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'None' // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'None'
     });
 
     res.json({ 
@@ -88,15 +88,15 @@ router.post('/login', validateInput, async (req, res) => {
     res.cookie('userId', db.CONSTANT_USER_ID, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'None' // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'None'
     });
     
     res.cookie('username', user.username, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'None' // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'None'
     });
 
     res.json({ 

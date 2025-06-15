@@ -4,7 +4,7 @@ import Terminal from './Terminal';
 import FileManager from './FileManager';
 import Notepad from '../apps/Notepad/Notepad';
 import Calculator from '../apps/Calculator/Calculator';
-import TaskManager from '../apps/TaskManager/TaskManager';
+import TaskManager from '../apps/TaskManager/Taskmanager';
 import MusicPlayer from '../apps/MusicPlayer/MusicPlayer';
 import Game from '../apps/Games/Game';
 import Talk from '../apps/Talk/Talk';
@@ -266,7 +266,7 @@ const Desktop = () => {
   // Add rename functionality
   const handleRename = async (item, newName) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/fs/rename`, {
+      const response = await fetch(`https://browseros-aos.onrender.com/api/fs/rename`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -300,7 +300,7 @@ const Desktop = () => {
     try {
       // For files, we need to read the content
       if (item.type === 'file') {
-        const response = await fetch(`http://localhost:5000/api/fs/read/${encodeURIComponent(item.name)}?path=${encodeURIComponent(item.path || '')}`, {
+        const response = await fetch(`https://browseros-aos.onrender.com/api/fs/read/${encodeURIComponent(item.name)}?path=${encodeURIComponent(item.path || '')}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json'
@@ -342,7 +342,7 @@ const Desktop = () => {
     try {
       if (clipboard.type === 'file') {
         // For files, create a new file with the content
-        const response = await fetch(`http://localhost:5000/api/fs/write/${encodeURIComponent(clipboard.name)}`, {
+        const response = await fetch(`https://browseros-aos.onrender.com/api/fs/write/${encodeURIComponent(clipboard.name)}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -361,7 +361,7 @@ const Desktop = () => {
         }
       } else {
         // For folders, create a new directory
-        const response = await fetch(`http://localhost:5000/api/fs/mkdir`, {
+        const response = await fetch(`https://browseros-aos.onrender.com/api/fs/mkdir`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
