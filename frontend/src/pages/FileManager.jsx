@@ -35,7 +35,7 @@ const FileManager = ({ onMinimize, onMaximize, onClose, onDrag, onResize, isMini
   const prevPos = useRef(null);
   const headerRef = useRef(null);
   const windowRef = useRef(null);
-  const url = 'https://browseros-aos.onrender.com';
+  const url = 'http://localhost:5000';
 
 
   // Add new states for drag and drop

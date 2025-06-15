@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './MusicPlayer.css';
 
-const API_BASE_URL = 'https://browseros-aos.onrender.com'; // Add this at the top
+const API_BASE_URL = 'http://localhost:5000'; // Add this at the top
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);

@@ -32,7 +32,7 @@ const Notepad = ({ initialFile = null }) => {
             const cleanPath = filePath.replace(/^desktop\//, '');
             console.log('Opening file:', name, 'from path:', cleanPath);
             
-            const response = await fetch(`https://browseros-aos.onrender.com/api/fs/read/${encodeURIComponent(name)}?path=${encodeURIComponent(cleanPath)}`, {
+            const response = await fetch(`http://localhost:5000/api/fs/read/${encodeURIComponent(name)}?path=${encodeURIComponent(cleanPath)}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -87,7 +87,7 @@ const Notepad = ({ initialFile = null }) => {
             const cleanPath = currentPath === 'desktop/' ? '' : currentPath.replace(/^desktop\//, '');
             console.log('Loading files from path:', cleanPath);
             
-            const response = await fetch(`https://browseros-aos.onrender.com/api/fs/list?path=${encodeURIComponent(cleanPath)}`, {
+            const response = await fetch(`http://localhost:5000/api/fs/list?path=${encodeURIComponent(cleanPath)}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -186,7 +186,7 @@ const Notepad = ({ initialFile = null }) => {
             const cleanPath = currentPath.replace(/^desktop\//, '');
             console.log('Saving file:', fileName, 'to path:', cleanPath);
 
-            const response = await fetch(`https://browseros-aos.onrender.com/api/fs/write/${encodeURIComponent(fileName)}`, {
+            const response = await fetch(`http://localhost:5000/api/fs/write/${encodeURIComponent(fileName)}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

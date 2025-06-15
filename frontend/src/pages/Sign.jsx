@@ -9,7 +9,7 @@ const Sign = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const url = 'https://browseros-aos.onrender.com';
+  const url = 'http://localhost:5000';
 
 
   const handleSubmit = async (e) => {
