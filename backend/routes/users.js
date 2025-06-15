@@ -21,89 +21,93 @@ const validateInput = (req, res, next) => {
 };
 
 // Register new user
-router.post('/register', validateInput, (req, res) => {
-  const { username, password, email } = req.body;
+router.post('/register', validateInput, async (req, res) => {
+  try {
+    const { username, password, email } = req.body;
 
-  // Check if user or email already exists
-  db.query('SELECT * FROM users WHERE username = ? OR email = ?', [username, email], (err, results) => {
-    if (err) {
-      console.error('Database error:', err);
-      return res.status(500).json({ message: 'Database error' });
+    // Check if username already exists (since it's our primary key)
+    const existingUser = await db.getUserByUsername(username);
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists' });
     }
 
-    if (results.length > 0) {
-      return res.status(400).json({ message: 'Username or email already exists' });
+    // Check if email exists
+    const existingEmail = await db.getUserByEmail(email);
+    if (existingEmail) {
+      return res.status(400).json({ message: 'Email already exists' });
     }
 
-    // Insert new user with fixed user_id of 1
-    db.query('INSERT INTO users (user_id, username, email, password_hash, created_at) VALUES (1, ?, ?, ?, NOW())',
-      [username, email, password],
-      (err, result) => {
-        if (err) {
-          console.error('Error creating user:', err);
-          return res.status(500).json({ message: 'Error creating user' });
-        }
+    // Create new user with constant user_id
+    const newUser = await db.createUser({
+      username,
+      email,
+      password // Note: In a real app, you should hash the password
+    });
 
-        // Always set userId cookie to 1
-        res.cookie('userId', '1', {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          maxAge: 24 * 60 * 60 * 1000 // 24 hours
-        });
+    // Set cookies with constant user_id
+    res.cookie('userId', db.CONSTANT_USER_ID, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000 ,
+      sameSite: 'None'// 24 hours
+    });
 
-        res.cookie('username', username, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          maxAge: 24 * 60 * 60 * 1000 // 24 hours
-        });
+    res.cookie('username', username, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'None' // 24 hours
+    });
 
-        res.json({ 
-          message: 'User registered successfully', 
-          userId: '1',
-          username: username 
-        });
-      }
-    );
-  });
+    res.json({ 
+      message: 'User registered successfully', 
+      userId: db.CONSTANT_USER_ID,
+      username: newUser.username 
+    });
+  } catch (error) {
+    console.error('Error registering user:', error);
+    if (error.message === 'Username already exists') {
+      return res.status(400).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Error registering user' });
+  }
 });
 
 // Login user
-router.post('/login', validateInput, (req, res) => {
-  const { username, password } = req.body;
+router.post('/login', validateInput, async (req, res) => {
+  try {
+    const { username, password } = req.body;
 
-  db.query('SELECT * FROM users WHERE username = ? AND password_hash = ?',
-    [username, password],
-    (err, results) => {
-      if (err) {
-        console.error('Database error:', err);
-        return res.status(500).json({ message: 'Database error' });
-      }
+    const user = await db.getUserByUsername(username);
 
-      if (results.length === 0) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-      }
-
-      const user = results[0];
-      // Always set userId cookie to 1
-      res.cookie('userId', '1', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      });
-      
-      res.cookie('username', user.username, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      });
-
-      res.json({ 
-        message: 'Login successful', 
-        userId: '1',
-        username: user.username 
-      });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
-  );
+
+    // Set cookies with constant user_id
+    res.cookie('userId', db.CONSTANT_USER_ID, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'None' // 24 hours
+    });
+    
+    res.cookie('username', user.username, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'None' // 24 hours
+    });
+
+    res.json({ 
+      message: 'Login successful', 
+      userId: db.CONSTANT_USER_ID,
+      username: user.username 
+    });
+  } catch (error) {
+    console.error('Error logging in:', error);
+    res.status(500).json({ message: 'Error logging in' });
+  }
 });
 
 // Logout user
@@ -114,32 +118,32 @@ router.post('/logout', (req, res) => {
 });
 
 // Get current user info
-router.get('/me', (req, res) => {
-  // Get username from cookies instead of userId
-  const username = req.cookies.username;
+router.get('/me', async (req, res) => {
+  try {
+    const username = req.cookies.username;
 
-  if (!username) {
-    return res.status(401).json({ message: 'Not authenticated' });
-  }
-
-  db.query('SELECT user_id, username, email FROM users WHERE username = ?',
-    [username],
-    (err, results) => {
-      if (err || results.length === 0) {
-        console.error('Database error or user not found:', err);
-        return res.status(401).json({ message: 'Not authenticated' });
-      }
-
-      const user = results[0];
-      res.json({ 
-        user: {
-          userId: user.user_id,
-          username: user.username,
-          email: user.email
-        }
-      });
+    if (!username) {
+      return res.status(401).json({ message: 'Not authenticated' });
     }
-  );
+
+    const user = await db.getUserByUsername(username);
+
+    if (!user) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    // Don't send password in response
+    const { password, ...userInfo } = user;
+    res.json({ 
+      user: {
+        ...userInfo,
+        userId: db.CONSTANT_USER_ID // Always return constant user_id
+      }
+    });
+  } catch (error) {
+    console.error('Error getting user info:', error);
+    res.status(500).json({ message: 'Error getting user info' });
+  }
 });
 
 module.exports = router;
